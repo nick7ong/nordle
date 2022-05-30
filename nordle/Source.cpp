@@ -3,18 +3,14 @@
 #include <fstream>
 #include <vector>
 #include <cstring>
-#include "tabulate.hpp"
 
 using namespace std;
-using namespace tabulate;
 
 // main library for words
 vector<string> WordLibrary;
+vector<vector<char>> NewTable;
 
 class GameWord {
-protected:
-	
-
 public:
 	// initiate filestream into vector
 	void FileStream(vector<string>& V, string f = "words.txt") {
@@ -34,41 +30,58 @@ public:
 		fin.close();
 	}
 
-	void PrintLibrary() {
+	void Print() {
 		for (int i = 0; i < WordLibrary.size(); i++) {
 			cout << WordLibrary[i] << "\n";
 		}
 	}
+
 };
 
-string stoc(char c) {
-	string s(1, c);
-	return s;
-}
+class Table {
+public:
+	void FileStream(vector<vector<char>>& V, string f = "NewTable.txt") { // store file int 2d vect or arr
+		ifstream fin;
+		fin.open(f);
+		if (fin.is_open()) {
+			while (!fin.eof()) {
+				char w;
+				fin >> w;
+				V.push_back(w);
+			}
+		}
+		else if (fin.fail()) {
+			cout << "file error" << endl;
+			exit(1);
+		}
+		fin.close();
+	}
+
+	void Print() {
+		//print 2d vec or arr
+	}
+
+};
+
+
 
 void TerminalGUI(int turnRow)
 {
-	Table GUI;
-	string guess("");
-	char* prevGuess{};
+	string guess;
 
 	if (turnRow == 0) {
-		GUI.add_row({ " ", " ", " ", " ", " " });
-		GUI.add_row({ " ", " ", " ", " ", " " });
-		GUI.add_row({ " ", " ", " ", " ", " " });
-		GUI.add_row({ " ", " ", " ", " ", " " });
-		GUI.add_row({ " ", " ", " ", " ", " " });
-		GUI.add_row({ " ", " ", " ", " ", " " });
-		cout << GUI << endl;
+		Table T1;
+		T1.FileStream(NewTable);
+		T1.Print();
 		cout << "Enter Guess: ";
 		cin >> guess;
-		prevGuess = &guess[0];
-
 	}
 	else if (turnRow == 1) {
-		for (int i = 0; i < guess.length() + 1; i++) {
-			GUI[0][0].set_text(stoc(prevGuess[i]));
-		}
+		
+
+		
+		cout << "Enter Guess: ";
+
 		cout << "turn 2" << endl;
 		cout << "Enter Guess: ";
 		cin >> guess;
