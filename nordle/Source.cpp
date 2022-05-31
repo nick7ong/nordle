@@ -2,6 +2,8 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <map>
+#include <array>
 #include <cstring>
 
 using namespace std;
@@ -38,9 +40,15 @@ public:
 
 };
 
-class Table {
-public:
-	void FileStream(vector<vector<char>>& V, string f = "NewTable.txt") { // store file int 2d vect or arr
+struct Table {
+	string border = "+---+---+---+---+---+";
+	array<char, 21> blankrow = { '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|' };
+	array<char, 21> guessrow = { '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|' };
+
+	int blank = 6;
+	int guess = 0;
+
+	/*void FileStream(vector<vector<char>>& V, string f = "NewTable.txt") { // store file int 2d vect or arr
 		ifstream fin;
 		fin.open(f);
 		if (fin.is_open()) {
@@ -56,55 +64,87 @@ public:
 		}
 		fin.close();
 	}
+	*/
 
-	void Print() {
-		//print 2d vec or arr
+	void PrintGuess() {
+		for (int i = 0; i < guess; i++) {
+			cout << border << '\n';
+			for (auto& i : guessrow)
+				cout << i;
+			cout << '\n';
+		} cout << border << '\n';
+
+	}
+
+	void PrintBlank() {
+		for (int i = 0; i < blank; i++) {
+			cout << border << '\n';
+			for (auto& i : blankrow)
+				cout << i;
+			cout << '\n';
+		} cout << border << '\n';
+
 	}
 
 };
 
 
 
+
+
 void TerminalGUI(int turnRow)
 {
-	string guess;
+	Table T;
+	string g1, g2, g3, g4, g5, g6;
 
 	if (turnRow == 0) {
-		Table T1;
-		T1.FileStream(NewTable);
-		T1.Print();
-		cout << "Enter Guess: ";
-		cin >> guess;
-	}
-	else if (turnRow == 1) {
 		
+		T.PrintBlank();
+		cout << "Enter Guess: ";
+		cin >> g1;
+
+		//get this to work global
+		char cg1[1024];
+		strncpy_s(cg1, g1.c_str(), sizeof(cg1));
+		cg1[sizeof(cg1) - 1] = 0;
+
+		for (int i = 2 , j = 0; i < T.guessrow.size() + 1 && j < 6; i += 4, j++) {
+			T.guessrow[i] = cg1[j];
+		}
 
 		
-		cout << "Enter Guess: ";
+
+		T.blank--;
+		T.guess++;
+	}
+	else if (turnRow == 1) {
+		for (auto& i : T.guessrow)
+			cout << i;
+		T.PrintBlank();
 
 		cout << "turn 2" << endl;
 		cout << "Enter Guess: ";
-		cin >> guess;
+		cin >> g2;
 	}
 	else if (turnRow == 2) {
 		cout << "turn 3" << endl;
 		cout << "Enter Guess: ";
-		cin >> guess;
+		cin >> g3;
 	}
 	else if (turnRow == 3) {
 		cout << "turn 4" << endl;
 		cout << "Enter Guess: ";
-		cin >> guess;
+		cin >> g4;
 	}
 	else if (turnRow == 4) {
 		cout << "turn 5" << endl;
 		cout << "Enter Guess: ";
-		cin >> guess;
+		cin >> g5;
 	}
 	else if (turnRow == 5) {
 		cout << "turn 6" << endl;
 		cout << "Enter Guess: ";
-		cin >> guess;
+		cin >> g6;
 	}
 	else if (turnRow == 6) {
 		cout << "GAME OVER!" << endl;
