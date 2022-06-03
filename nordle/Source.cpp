@@ -2,15 +2,14 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <map>
 #include <array>
 #include <cstring>
+#include <random>
 
 using namespace std;
 
 // main library for words
 vector<string> WordLibrary;
-vector<vector<char>> NewTable;
 
 class GameWord {
 public:
@@ -38,13 +37,13 @@ public:
 		}
 	}
 
-	string RandomWord(vector<string> V) {           //FIX THIS: doesnt actually generate random word
-		vector<string> currentVector = V;
-		string randomWord;
-		int randomNumber = rand() % currentVector.size();
-		randomWord = currentVector.at(randomNumber);
-		return randomWord;
+	string RandomWord(vector<string> const& V) {           //Works now
+		random_device rd;
+		mt19937 eng(rd());
+		uniform_int_distribution<> distr(0, V.size() - 1);
+		return V[distr(eng)];
 	}
+	
 
 };
 
@@ -67,37 +66,54 @@ struct Element {
 			cout << i;
 		cout << '\n';
 	}
-
-
 };
 
-void TerminalGUI(const string guessWord)
+
+void TerminalGUI(const string a)
 {
-	cout << guessWord << '\n';
+	//cout << "Answer: " << a << "\n\n";
 	Element blank, r1, r2, r3, r4, r5, r6;
 	string g1, g2, g3, g4, g5, g6;
+	int turnRow = 0;
 	int turns = 6;
 	const int s = 1024;
 	char cg1[s], cg2[s], cg3[s], cg4[s], cg5[s], cg6[s];
 
-	for (int turnRow = 0; turnRow <= 6; turnRow++) {
+	while (turnRow <= 6) {
 		if (turnRow == 0) {
 			blank.PrintBlank(turns - turnRow);
-			cout << "Enter Guess: ";
-			cin >> g1;
-			
+			while (g1.length() != 5) {
+				cout << "Enter Guess 1: ";
+				cin >> g1;
+				if (g1.length() == 5) {
+					continue;
+				}
+				
+			}
+
 			strncpy_s(cg1, g1.c_str(), sizeof(cg1));
 			for (int i = 2, j = 0; i < r1.row.size() + 1 && j < 6; i += 4, j++) {
 				r1.row[i] = cg1[j];
-			}	
+			}
 		}
 		else if (turnRow == 1) {
+			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			r2.PrintBlank(turns - turnRow);
-			cout << "turn 2" << endl;
-			cout << "Enter Guess: ";
-			cin >> g2;
+			if (g1 == a) {
+				cout << "YOU WIN :D\n";
+				exit(1);
+			}
+			else {
+				while (g2.length() != 5) {
+					cout << "Enter Guess 2: ";
+					cin >> g2;
+					if (g2.length() == 5) {
+						continue;
+					}
+				}
+			}
 
 			strncpy_s(cg2, g2.c_str(), sizeof(cg2));
 			for (int i = 2, j = 0; i < r2.row.size() + 1 && j < 6; i += 4, j++) {
@@ -105,21 +121,32 @@ void TerminalGUI(const string guessWord)
 			}
 		}
 		else if (turnRow == 2) {
+			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			cout << blank.border << '\n';
 			r2.PrintGuess(r2);
 			r3.PrintBlank(turns - turnRow);
-			cout << "turn 3" << endl;
-			cout << "Enter Guess: ";
-			cin >> g3;
-
+			if (g2 == a) {
+				cout << "YOU WIN :D\n";
+				exit(1);
+			}
+			else {
+				while (g3.length() != 5) {
+					cout << "Enter Guess 3: ";
+					cin >> g3;
+					if (g3.length() == 5) {
+						continue;
+					}
+				}
+			}
 			strncpy_s(cg3, g3.c_str(), sizeof(cg3));
 			for (int i = 2, j = 0; i < r3.row.size() + 1 && j < 6; i += 4, j++) {
 				r3.row[i] = cg3[j];
 			}
 		}
 		else if (turnRow == 3) {
+			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			cout << blank.border << '\n';
@@ -127,9 +154,19 @@ void TerminalGUI(const string guessWord)
 			cout << blank.border << '\n';
 			r3.PrintGuess(r3);
 			r4.PrintBlank(turns - turnRow);
-			cout << "turn 4" << endl;
-			cout << "Enter Guess: ";
-			cin >> g4;
+			if (g3 == a) {
+				cout << "YOU WIN :D\n";
+				exit(1);
+			}
+			else {
+				while (g4.length() != 5) {
+					cout << "Enter Guess 4: ";
+					cin >> g4;
+					if (g4.length() == 5) {
+						continue;
+					}
+				}
+			}
 
 			strncpy_s(cg4, g4.c_str(), sizeof(cg4));
 			for (int i = 2, j = 0; i < r4.row.size() + 1 && j < 6; i += 4, j++) {
@@ -137,6 +174,7 @@ void TerminalGUI(const string guessWord)
 			}
 		}
 		else if (turnRow == 4) {
+			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			cout << blank.border << '\n';
@@ -146,9 +184,19 @@ void TerminalGUI(const string guessWord)
 			cout << blank.border << '\n';
 			r4.PrintGuess(r4);
 			r5.PrintBlank(turns - turnRow);
-			cout << "turn 5" << endl;
-			cout << "Enter Guess: ";
-			cin >> g5;
+			if (g4 == a) {
+				cout << "YOU WIN :D\n";
+				exit(1);
+			}
+			else {
+				while (g5.length() != 5) {
+					cout << "Enter Guess 5: ";
+					cin >> g5;
+					if (g5.length() == 5) {
+						continue;
+					}
+				}
+			}
 
 			strncpy_s(cg5, g5.c_str(), sizeof(cg5));
 			for (int i = 2, j = 0; i < r5.row.size() + 1 && j < 6; i += 4, j++) {
@@ -167,9 +215,19 @@ void TerminalGUI(const string guessWord)
 			cout << blank.border << '\n';
 			r5.PrintGuess(r5);
 			r6.PrintBlank(turns - turnRow);
-			cout << "turn 6" << endl;
-			cout << "Enter Guess: ";
-			cin >> g6;
+			if (g5 == a) {
+				cout << "YOU WIN :D\n";
+				exit(1);
+			}
+			else {
+				while (g6.length() != 5) {
+					cout << "Enter Guess 6: ";
+					cin >> g6;
+					if (g6.length() == 5) {
+						continue;
+					}
+				}
+			}
 
 			strncpy_s(cg6, g6.c_str(), sizeof(cg6));
 			for (int i = 2, j = 0; i < r6.row.size() + 1 && j < 6; i += 4, j++) {
@@ -177,8 +235,7 @@ void TerminalGUI(const string guessWord)
 			}
 		}
 		else if (turnRow == 6) {
-			cout << '\n';
-			cout << "GAME OVER!\n";
+			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			cout << blank.border << '\n';
@@ -192,16 +249,25 @@ void TerminalGUI(const string guessWord)
 			cout << blank.border << '\n';
 			r6.PrintGuess(r6);
 			cout << blank.border << '\n';
+
+			if (g6 == a) {
+				cout << "YOU WIN :D\n";
+				exit(1);
+			}
+			cout << '\n';
+			cout << "GAME OVER!\n";
+
 		}
+		turnRow++;
 	}
 }
 
 
 int main() {
 	GameWord N;
-
 	N.FileStream(WordLibrary);
-	TerminalGUI(N.RandomWord(WordLibrary));
+	string answer = N.RandomWord(WordLibrary);
+	TerminalGUI(answer);
 
 	return 0;
 }
