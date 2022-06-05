@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h> // for color text 
 #include <string>
 #include <fstream>
 #include <vector>
@@ -37,14 +38,13 @@ public:
 		}
 	}
 
-	string RandomWord(vector<string> const& V) {           //Works now
+	// random selector actually works now
+	string RandomWord(vector<string> const& V) {           
 		random_device rd;
 		mt19937 eng(rd());
 		uniform_int_distribution<> distr(0, V.size() - 1);
 		return V[distr(eng)];
 	}
-	
-
 };
 
 struct Element {
@@ -58,7 +58,6 @@ struct Element {
 				cout << i;
 			cout << '\n';
 		} cout << border << '\n';
-
 	}
 
 	void PrintGuess(Element r) {
@@ -68,17 +67,43 @@ struct Element {
 	}
 };
 
+// Color system for terminal text
+struct Color {
+	void Default() {
+		system("Color 0F");
+	}
+	void ChangeRed() {
+		system("Color 4F");
+	}
+	void ChangeGreen() {
+		system("Color 2F");
+	}
+	void ChangeYellow() {
+		system("Color 6F");
+	}
+	void ChangeGray() {
+		system("Color 8F");
+	}
+};
+
 
 void TerminalGUI(const string a)
 {
-	//cout << "Answer: " << a << "\n\n";
+	// declaration of local variables
 	Element blank, r1, r2, r3, r4, r5, r6;
 	string g1, g2, g3, g4, g5, g6;
 	int turnRow = 0;
 	int turns = 6;
-	const int s = 1024;
-	char cg1[s], cg2[s], cg3[s], cg4[s], cg5[s], cg6[s];
+	const int s = 6;
+	char cg1[s], cg2[s], cg3[s], cg4[s], cg5[s], cg6[s], ca[s];
 
+	// store random string in char array for comparison
+	strncpy_s(ca, a.c_str(), sizeof(ca));
+	for (auto& i : ca)
+		cout << i;
+	cout << '\n';
+
+	// turn iterator
 	while (turnRow <= 6) {
 		if (turnRow == 0) {
 			blank.PrintBlank(turns - turnRow);
@@ -90,14 +115,13 @@ void TerminalGUI(const string a)
 				}
 				
 			}
-
+			// store guess 1
 			strncpy_s(cg1, g1.c_str(), sizeof(cg1));
 			for (int i = 2, j = 0; i < r1.row.size() + 1 && j < 6; i += 4, j++) {
 				r1.row[i] = cg1[j];
 			}
 		}
 		else if (turnRow == 1) {
-			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			r2.PrintBlank(turns - turnRow);
@@ -114,14 +138,13 @@ void TerminalGUI(const string a)
 					}
 				}
 			}
-
+			// store guess 2
 			strncpy_s(cg2, g2.c_str(), sizeof(cg2));
 			for (int i = 2, j = 0; i < r2.row.size() + 1 && j < 6; i += 4, j++) {
 				r2.row[i] = cg2[j];
 			}
 		}
 		else if (turnRow == 2) {
-			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			cout << blank.border << '\n';
@@ -140,13 +163,13 @@ void TerminalGUI(const string a)
 					}
 				}
 			}
+			// store guess 3
 			strncpy_s(cg3, g3.c_str(), sizeof(cg3));
 			for (int i = 2, j = 0; i < r3.row.size() + 1 && j < 6; i += 4, j++) {
 				r3.row[i] = cg3[j];
 			}
 		}
 		else if (turnRow == 3) {
-			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			cout << blank.border << '\n';
@@ -167,14 +190,13 @@ void TerminalGUI(const string a)
 					}
 				}
 			}
-
+			// store guess 4
 			strncpy_s(cg4, g4.c_str(), sizeof(cg4));
 			for (int i = 2, j = 0; i < r4.row.size() + 1 && j < 6; i += 4, j++) {
 				r4.row[i] = cg4[j];
 			}
 		}
 		else if (turnRow == 4) {
-			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			cout << blank.border << '\n';
@@ -197,7 +219,7 @@ void TerminalGUI(const string a)
 					}
 				}
 			}
-
+			// store guess 5
 			strncpy_s(cg5, g5.c_str(), sizeof(cg5));
 			for (int i = 2, j = 0; i < r5.row.size() + 1 && j < 6; i += 4, j++) {
 				r5.row[i] = cg5[j];
@@ -228,14 +250,13 @@ void TerminalGUI(const string a)
 					}
 				}
 			}
-
+			// store guess 6
 			strncpy_s(cg6, g6.c_str(), sizeof(cg6));
 			for (int i = 2, j = 0; i < r6.row.size() + 1 && j < 6; i += 4, j++) {
 				r6.row[i] = cg6[j];
 			}
 		}
 		else if (turnRow == 6) {
-			
 			cout << blank.border << '\n';
 			r1.PrintGuess(r1);
 			cout << blank.border << '\n';
@@ -256,12 +277,10 @@ void TerminalGUI(const string a)
 			}
 			cout << '\n';
 			cout << "GAME OVER!\n";
-
 		}
 		turnRow++;
 	}
 }
-
 
 int main() {
 	GameWord N;
