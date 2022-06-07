@@ -25,4 +25,9 @@
     </Text>
     <Text Include="NewTable.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="color.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

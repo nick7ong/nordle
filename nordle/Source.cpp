@@ -1,11 +1,11 @@
 #include <iostream>
-#include <windows.h> // for color text 
 #include <string>
 #include <fstream>
 #include <vector>
 #include <array>
 #include <cstring>
 #include <random>
+#include "color.hpp" // for color text 
 
 using namespace std;
 
@@ -67,25 +67,6 @@ struct Element {
 	}
 };
 
-// Color system for terminal text
-struct Color {
-	void Default() {
-		system("Color 0F");
-	}
-	void ChangeRed() {
-		system("Color 4F");
-	}
-	void ChangeGreen() {
-		system("Color 2F");
-	}
-	void ChangeYellow() {
-		system("Color 6F");
-	}
-	void ChangeGray() {
-		system("Color 8F");
-	}
-};
-
 
 void TerminalGUI(const string a)
 {
@@ -118,7 +99,17 @@ void TerminalGUI(const string a)
 			// store guess 1
 			strncpy_s(cg1, g1.c_str(), sizeof(cg1));
 			for (int i = 2, j = 0; i < r1.row.size() + 1 && j < 6; i += 4, j++) {
-				r1.row[i] = cg1[j];
+				if (cg1[j] == ca[j]) {
+					r1.row[i] = cg1[j];
+				}
+				else if (cg1[j] != ca[j]) {
+					dye::white_on_red(cg1[j]);
+					r1.row[i] = cg1[j];
+				}
+				else {
+					dye::blue_on_bright_white(r1.row[i] = cg1[j]);
+				}
+				
 			}
 		}
 		else if (turnRow == 1) {
