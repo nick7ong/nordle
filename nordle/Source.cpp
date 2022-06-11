@@ -7,6 +7,8 @@
 #include <random>
 #include "color.hpp" // for color text 
 
+#pragma warning(disable : 4996)
+
 using namespace std;
 
 // main library for words
@@ -60,7 +62,18 @@ struct Element {
 		} cout << border << '\n';
 	}
 
-	void PrintGuess(Element r) {
+	void ColorStoreRow(Element& r, string g, char* ca, char* cg) {
+		strncpy(cg, g.c_str(), sizeof(cg) + 1);
+		cout << cg[4] <<'\n';
+		for (int i = 2, j = 0; i < r.row.size() + 1 && j < sizeof(cg) + 1; i += 4, j++) {
+			if (cg[j] == ca[j]) {
+				cg[j] = dye::white_on_green(cg[j]); // maybe just use SetConsoleTextAttribute() ???
+				r.row[i] = cg[j];
+			}
+		}
+	}
+
+	void PrintGuess(Element& r) {
 		for (auto& i : r.row)
 			cout << i;
 		cout << '\n';
@@ -94,23 +107,9 @@ void TerminalGUI(const string a)
 				if (g1.length() == 5) {
 					continue;
 				}
-				
 			}
 			// store guess 1
-			strncpy_s(cg1, g1.c_str(), sizeof(cg1));
-			for (int i = 2, j = 0; i < r1.row.size() + 1 && j < 6; i += 4, j++) {
-				if (cg1[j] == ca[j]) {
-					r1.row[i] = cg1[j];
-				}
-				else if (cg1[j] != ca[j]) {
-					dye::white_on_red(cg1[j]);
-					r1.row[i] = cg1[j];
-				}
-				else {
-					dye::blue_on_bright_white(r1.row[i] = cg1[j]);
-				}
-				
-			}
+			r1.ColorStoreRow(r1, g1, ca, cg1);			
 		}
 		else if (turnRow == 1) {
 			cout << blank.border << '\n';
@@ -130,10 +129,7 @@ void TerminalGUI(const string a)
 				}
 			}
 			// store guess 2
-			strncpy_s(cg2, g2.c_str(), sizeof(cg2));
-			for (int i = 2, j = 0; i < r2.row.size() + 1 && j < 6; i += 4, j++) {
-				r2.row[i] = cg2[j];
-			}
+			r2.ColorStoreRow(r2, g2, ca, cg2);
 		}
 		else if (turnRow == 2) {
 			cout << blank.border << '\n';
@@ -155,10 +151,7 @@ void TerminalGUI(const string a)
 				}
 			}
 			// store guess 3
-			strncpy_s(cg3, g3.c_str(), sizeof(cg3));
-			for (int i = 2, j = 0; i < r3.row.size() + 1 && j < 6; i += 4, j++) {
-				r3.row[i] = cg3[j];
-			}
+			r3.ColorStoreRow(r3, g3, ca, cg3);
 		}
 		else if (turnRow == 3) {
 			cout << blank.border << '\n';
@@ -182,10 +175,7 @@ void TerminalGUI(const string a)
 				}
 			}
 			// store guess 4
-			strncpy_s(cg4, g4.c_str(), sizeof(cg4));
-			for (int i = 2, j = 0; i < r4.row.size() + 1 && j < 6; i += 4, j++) {
-				r4.row[i] = cg4[j];
-			}
+			r4.ColorStoreRow(r4, g4, ca, cg4);
 		}
 		else if (turnRow == 4) {
 			cout << blank.border << '\n';
@@ -211,10 +201,7 @@ void TerminalGUI(const string a)
 				}
 			}
 			// store guess 5
-			strncpy_s(cg5, g5.c_str(), sizeof(cg5));
-			for (int i = 2, j = 0; i < r5.row.size() + 1 && j < 6; i += 4, j++) {
-				r5.row[i] = cg5[j];
-			}
+			r5.ColorStoreRow(r5, g5, ca, cg5);
 		}
 		else if (turnRow == 5) {
 			cout << blank.border << '\n';
@@ -242,10 +229,7 @@ void TerminalGUI(const string a)
 				}
 			}
 			// store guess 6
-			strncpy_s(cg6, g6.c_str(), sizeof(cg6));
-			for (int i = 2, j = 0; i < r6.row.size() + 1 && j < 6; i += 4, j++) {
-				r6.row[i] = cg6[j];
-			}
+			r6.ColorStoreRow(r6, g6, ca, cg6);
 		}
 		else if (turnRow == 6) {
 			cout << blank.border << '\n';
