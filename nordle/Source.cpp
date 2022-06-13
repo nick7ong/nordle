@@ -5,11 +5,32 @@
 #include <array>
 #include <cstring>
 #include <random>
-#include "color.hpp" // for color text 
+#include <windows.h>
+#include <wincon.h>
+//#include "color.hpp" // for color text 
 
 #pragma warning(disable : 4996)
+#define RESET   "\033[0m"
+#define BLACK   "\033[30m"      /* Black */
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+#define BLUE    "\033[34m"      /* Blue */
+#define MAGENTA "\033[35m"      /* Magenta */
+#define CYAN    "\033[36m"      /* Cyan */
+#define WHITE   "\033[37m"      /* White */
+#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+#define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 
 using namespace std;
+
+HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 // main library for words
 vector<string> WordLibrary;
@@ -49,9 +70,16 @@ public:
 	}
 };
 
+string color(string c, char x) {
+	string newString = c + x;
+	return newString;
+}
+
 struct Element {
 	string border = "+---+---+---+---+---+";
-	array<char, 21> row = { '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|' };
+	//array<char, 21> row = { '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|' };
+	array<string, 21> row = { "|", "~", "~", "~", "|", "~", "~", "~", "|", "~", "~", "~", "|", "~", "~", "~", "|", "~", "~", "~", "|"};
+
 
 	void PrintBlank(int rowNum) {
 		for (int i = 0; i < rowNum; i++) {
@@ -64,18 +92,18 @@ struct Element {
 
 	void ColorStoreRow(Element& r, string g, char* ca, char* cg) {
 		strncpy(cg, g.c_str(), sizeof(cg) + 1);
-		cout << cg[4] <<'\n';
 		for (int i = 2, j = 0; i < r.row.size() + 1 && j < sizeof(cg) + 1; i += 4, j++) {
-			if (cg[j] == ca[j]) {
-				cg[j] = dye::white_on_green(cg[j]); // maybe just use SetConsoleTextAttribute() ???
-				r.row[i] = cg[j];
-			}
+			if (ca[j] != cg[j])
+				r.row[i] = color(WHITE, cg[j]);
+			else if (ca[j] == cg[j])
+				r.row[i] = color(GREEN, cg[j]);
 		}
 	}
 
 	void PrintGuess(Element& r) {
-		for (auto& i : r.row)
-			cout << i;
+		for (auto& i : r.row) {
+			cout << RESET<< i << RESET;
+		}
 		cout << '\n';
 	}
 };
@@ -109,7 +137,7 @@ void TerminalGUI(const string a)
 				}
 			}
 			// store guess 1
-			r1.ColorStoreRow(r1, g1, ca, cg1);			
+			r1.ColorStoreRow(r1, g1, ca, cg1);		
 		}
 		else if (turnRow == 1) {
 			cout << blank.border << '\n';
