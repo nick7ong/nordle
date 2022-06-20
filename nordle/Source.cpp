@@ -6,7 +6,7 @@
 #include <cstring>
 #include <random>
 #include <windows.h>
-#include <wincon.h>
+//#include <wincon.h>
 //#include "color.hpp" // for color text 
 
 #pragma warning(disable : 4996)
@@ -70,9 +70,20 @@ public:
 	}
 };
 
-string color(string c, char x) {
+template<typename T>
+string color(string c, T x) {
 	string newString = c + x;
 	return newString;
+}
+bool compare(char* ca, char cg) {
+	for (int i = 0; i < sizeof(ca) + 1; i++) {
+		for (int j = 0; j < sizeof(cg) + 1; j++) {
+			if (cg == ca[j])
+				//cout << cg << " = " << ca[j] << "\n";
+				return true;
+		}
+	}
+	return false;
 }
 
 struct Element {
@@ -92,17 +103,30 @@ struct Element {
 
 	void ColorStoreRow(Element& r, string g, char* ca, char* cg) {
 		strncpy(cg, g.c_str(), sizeof(cg) + 1);
+		//first color the word
+		/*for (int i = 0; i < sizeof(cg) + 1; i++) {
+			if (compare(ca, cg[i]) && ca[i] == cg[i])
+				cg[i] = color(BOLDGREEN, cg[i]);
+			else if 
+		}*/
+
+		// then store the word
 		for (int i = 2, j = 0; i < r.row.size() + 1 && j < sizeof(cg) + 1; i += 4, j++) {
-			if (ca[j] != cg[j])
-				r.row[i] = color(WHITE, cg[j]);
-			else if (ca[j] == cg[j])
-				r.row[i] = color(GREEN, cg[j]);
+			size_t cpos = g.find(cg[j]);
+			if (compare(ca, cg[j]) && ca[j] == cg[j])
+				r.row[i] = color(BOLDGREEN, cg[j]);
+			else if (compare(ca, cg[j]) && cpos != string::npos) { // Kinda works for only a select number of elements??
+				cout << cg[j] << " found at " << cpos << " compared with " << ca[j] << " at" << string::npos << "\n";
+				r.row[i] = color(BOLDYELLOW, cg[j]);
+			}
+			else if (!compare(ca, cg[j]) && ca[j] != cg[j])
+				r.row[i] = color(RESET, cg[j]);
 		}
 	}
 
 	void PrintGuess(Element& r) {
 		for (auto& i : r.row) {
-			cout << RESET<< i << RESET;
+			cout << RESET << i << RESET;
 		}
 		cout << '\n';
 	}
