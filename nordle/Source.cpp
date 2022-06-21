@@ -6,8 +6,6 @@
 #include <cstring>
 #include <random>
 #include <windows.h>
-//#include <wincon.h>
-//#include "color.hpp" // for color text 
 
 #pragma warning(disable : 4996)
 #define RESET   "\033[0m"
@@ -29,8 +27,6 @@
 #define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 
 using namespace std;
-
-HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 // main library for words
 vector<string> WordLibrary;
@@ -77,9 +73,8 @@ string color(string c, T x) {
 }
 bool compare(char* ca, char cg) {
 	for (int i = 0; i < sizeof(ca) + 1; i++) {
-		for (int j = 0; j < sizeof(cg) + 1; j++) {
+		for (int j = 0; j < sizeof(ca) + 1; j++) {
 			if (cg == ca[j])
-				//cout << cg << " = " << ca[j] << "\n";
 				return true;
 		}
 	}
@@ -112,11 +107,12 @@ struct Element {
 
 		// then store the word
 		for (int i = 2, j = 0; i < r.row.size() + 1 && j < sizeof(cg) + 1; i += 4, j++) {
-			size_t cpos = g.find(cg[j]);
-			if (compare(ca, cg[j]) && ca[j] == cg[j])
+			size_t gpos = g.find(cg[j]);
+			size_t apos = g.find(ca[j]);
+			if (cg[j] == ca[j])
 				r.row[i] = color(BOLDGREEN, cg[j]);
-			else if (compare(ca, cg[j]) && cpos != string::npos) { // Kinda works for only a select number of elements??
-				cout << cg[j] << " found at " << cpos << " compared with " << ca[j] << " at" << string::npos << "\n";
+			else if (compare(ca, cg[j]) && gpos != apos) { 
+				cout << cg[j] << " found at " << gpos << " compared with " << ca[j] << " at" << apos << "\n";
 				r.row[i] = color(BOLDYELLOW, cg[j]);
 			}
 			else if (!compare(ca, cg[j]) && ca[j] != cg[j])
@@ -313,6 +309,7 @@ int main() {
 	GameWord N;
 	N.FileStream(WordLibrary);
 	string answer = N.RandomWord(WordLibrary);
+	//string test = "audio";
 	TerminalGUI(answer);
 
 	return 0;
