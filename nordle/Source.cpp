@@ -7,24 +7,12 @@
 #include <random>
 #include <windows.h>
 
-#pragma warning(disable : 4996)
+#pragma warning(disable : 4996) //disable warning for strcpy() to work
+
+//defining color strings
 #define RESET   "\033[0m"
-#define BLACK   "\033[30m"      /* Black */
-#define RED     "\033[31m"      /* Red */
-#define GREEN   "\033[32m"      /* Green */
-#define YELLOW  "\033[33m"      /* Yellow */
-#define BLUE    "\033[34m"      /* Blue */
-#define MAGENTA "\033[35m"      /* Magenta */
-#define CYAN    "\033[36m"      /* Cyan */
-#define WHITE   "\033[37m"      /* White */
-#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
-#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
 #define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
 #define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
-#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
-#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
-#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
-#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 
 using namespace std;
 
@@ -80,10 +68,14 @@ bool compare(char* ca, char cg) {
 	}
 	return false;
 }
+bool exists(vector<string>v, string s) { // check this
+	if (find(v.begin(), v.end(), s) != v.end()) 
+		return true;
+	else return false; // no matches found		
+}
 
 struct Element {
 	string border = "+---+---+---+---+---+";
-	//array<char, 21> row = { '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|', '~', '~', '~', '|' };
 	array<string, 21> row = { "|", "~", "~", "~", "|", "~", "~", "~", "|", "~", "~", "~", "|", "~", "~", "~", "|", "~", "~", "~", "|"};
 
 
@@ -98,21 +90,13 @@ struct Element {
 
 	void ColorStoreRow(Element& r, string g, char* ca, char* cg) {
 		strncpy(cg, g.c_str(), sizeof(cg) + 1);
-		//first color the word
-		/*for (int i = 0; i < sizeof(cg) + 1; i++) {
-			if (compare(ca, cg[i]) && ca[i] == cg[i])
-				cg[i] = color(BOLDGREEN, cg[i]);
-			else if 
-		}*/
 
-		// then store the word
 		for (int i = 2, j = 0; i < r.row.size() + 1 && j < sizeof(cg) + 1; i += 4, j++) {
 			size_t gpos = g.find(cg[j]);
 			size_t apos = g.find(ca[j]);
 			if (cg[j] == ca[j])
 				r.row[i] = color(BOLDGREEN, cg[j]);
 			else if (compare(ca, cg[j]) && gpos != apos) { 
-				cout << cg[j] << " found at " << gpos << " compared with " << ca[j] << " at" << apos << "\n";
 				r.row[i] = color(BOLDYELLOW, cg[j]);
 			}
 			else if (!compare(ca, cg[j]) && ca[j] != cg[j])
@@ -128,8 +112,7 @@ struct Element {
 	}
 };
 
-
-void TerminalGUI(const string a)
+void TerminalGUI(const string a, vector<string>& WordLibrary) //make word check work
 {
 	// declaration of local variables
 	Element blank, r1, r2, r3, r4, r5, r6;
@@ -141,18 +124,21 @@ void TerminalGUI(const string a)
 
 	// store random string in char array for comparison
 	strncpy_s(ca, a.c_str(), sizeof(ca));
+	
+	/* print answer for debugging purposes
 	for (auto& i : ca)
 		cout << i;
 	cout << '\n';
+	*/
 
 	// turn iterator
 	while (turnRow <= 6) {
 		if (turnRow == 0) {
 			blank.PrintBlank(turns - turnRow);
-			while (g1.length() != 5) {
+			while (g1.length() != 5 && !exists(WordLibrary, g1)) {
 				cout << "Enter Guess 1: ";
 				cin >> g1;
-				if (g1.length() == 5) {
+				if (g1.length() == 5 && exists(WordLibrary, g1)) {
 					continue;
 				}
 			}
@@ -168,10 +154,10 @@ void TerminalGUI(const string a)
 				exit(1);
 			}
 			else {
-				while (g2.length() != 5) {
+				while (g2.length() != 5 && !exists(WordLibrary, g2)) {
 					cout << "Enter Guess 2: ";
 					cin >> g2;
-					if (g2.length() == 5) {
+					if (g2.length() == 5 && exists(WordLibrary, g2)) {
 						continue;
 					}
 				}
@@ -190,10 +176,10 @@ void TerminalGUI(const string a)
 				exit(1);
 			}
 			else {
-				while (g3.length() != 5) {
+				while (g3.length() != 5 && !exists(WordLibrary, g3)) {
 					cout << "Enter Guess 3: ";
 					cin >> g3;
-					if (g3.length() == 5) {
+					if (g3.length() == 5 && exists(WordLibrary, g3)) {
 						continue;
 					}
 				}
@@ -214,10 +200,10 @@ void TerminalGUI(const string a)
 				exit(1);
 			}
 			else {
-				while (g4.length() != 5) {
+				while (g4.length() != 5 && !exists(WordLibrary, g4)) {
 					cout << "Enter Guess 4: ";
 					cin >> g4;
-					if (g4.length() == 5) {
+					if (g4.length() == 5 && exists(WordLibrary, g4)) {
 						continue;
 					}
 				}
@@ -240,10 +226,10 @@ void TerminalGUI(const string a)
 				exit(1);
 			}
 			else {
-				while (g5.length() != 5) {
+				while (g5.length() != 5 && !exists(WordLibrary, g5)) {
 					cout << "Enter Guess 5: ";
 					cin >> g5;
-					if (g5.length() == 5) {
+					if (g5.length() == 5 && exists(WordLibrary, g5)) {
 						continue;
 					}
 				}
@@ -268,10 +254,10 @@ void TerminalGUI(const string a)
 				exit(1);
 			}
 			else {
-				while (g6.length() != 5) {
+				while (g6.length() != 5 && !exists(WordLibrary, g6)) {
 					cout << "Enter Guess 6: ";
 					cin >> g6;
-					if (g6.length() == 5) {
+					if (g6.length() == 5 && exists(WordLibrary, g6)) {
 						continue;
 					}
 				}
@@ -298,7 +284,7 @@ void TerminalGUI(const string a)
 				cout << "YOU WIN :D\n";
 				exit(1);
 			}
-			cout << '\n';
+			cout << "\nCorrect Answer: " << a << "\n";
 			cout << "GAME OVER!\n";
 		}
 		turnRow++;
@@ -309,8 +295,8 @@ int main() {
 	GameWord N;
 	N.FileStream(WordLibrary);
 	string answer = N.RandomWord(WordLibrary);
-	//string test = "audio";
-	TerminalGUI(answer);
+	//string test = "AUDIO";
+	TerminalGUI(answer, WordLibrary);
 
 	return 0;
 }
